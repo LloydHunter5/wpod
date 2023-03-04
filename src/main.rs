@@ -58,7 +58,7 @@ fn main() {
 
     let args = Command::new("wallpaper-set")
             .version("0.3.0")
-            .about("natgeo-wallpaper grabs either the NASA APOD or the National Geographic picture of the day, and sets it as your desktop background")
+            .about("wallpaper grabs either the NASA APOD or the National Geographic picture of the day, and sets it as your desktop background")
             .args(&[
                 Arg::new("nasa")
                 .short('n')
