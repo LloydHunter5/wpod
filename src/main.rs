@@ -57,7 +57,7 @@ fn main() {
     let mut key = API_KEY;
 
     let args = Command::new("wallpaper-set")
-            .version("1.0.0")
+            .version("0.3.0")
             .about("natgeo-wallpaper grabs either the NASA APOD or the National Geographic picture of the day, and sets it as your desktop background")
             .args(&[
                 Arg::new("nasa")
