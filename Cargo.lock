@@ -1710,20 +1710,6 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 
 [[package]]
 name = "wallpaper"
-version = "0.3.0"
-dependencies = [
- "chrono",
- "clap",
- "clokwerk",
- "dirs 4.0.0",
- "reqwest",
- "scraper",
- "serde_json",
- "wallpaper 3.2.0",
-]
-
-[[package]]
-name = "wallpaper"
 version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0547c84bf49b1096b20ce49736b86cd27f8225fc426665d3fba19e71e44c4d46"
@@ -1967,4 +1953,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "80d0f4e272c85def139476380b12f9ac60926689dd2e01d4923222f40580869d"
 dependencies = [
  "winapi",
+]
+
+[[package]]
+name = "wpod"
+version = "0.3.1"
+dependencies = [
+ "chrono",
+ "clap",
+ "clokwerk",
+ "dirs 4.0.0",
+ "reqwest",
+ "scraper",
+ "serde_json",
+ "wallpaper",
 ]
