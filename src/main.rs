@@ -11,8 +11,10 @@ enum Source {
     OutdoorPhotographer
 }
 
-const API_KEY : &str = "Mr42XkjQaVIjw80ezQKAe7cs21JkVV8yV73UTvTI";
+const NASA_API_KEY : &str = "Mr42XkjQaVIjw80ezQKAe7cs21JkVV8yV73UTvTI";
 
+// Grabs the url of the National Geographic photo of the day 
+// (there are several, the Canadian one is the only one I've found that is still updated)
 fn get_natgeo_img()-> String{
     let response_json = reqwest_get("https://www.natgeotv.com/ca/photo-of-the-day")
         .expect("Could not fetch webpage from \'https://www.natgeotv.com/ca/photo-of-the-day\'")
@@ -32,6 +34,7 @@ fn get_natgeo_img()-> String{
     return img_url.to_string();
 }
 
+// Grabs the url of the NASA APOD via the NASA APOD API using the provided API key
 fn get_nasa_img(api_key : &str) -> String {
     let api_response = reqwest_get("https://api.nasa.gov/planetary/apod?api_key=".to_owned() + &api_key).expect("Invalid API key!");
     let img_json = api_response.text().unwrap();
@@ -55,6 +58,7 @@ fn get_outdoor_photographer_img() -> String{
     return img_url.to_string();
 }
 
+// Downloads the current image from the provided url, and caches it on the users computer. Returns the directory of the image
 fn cache_image(img_url : &str) -> String{
     let img_bytes = reqwest_get(img_url).unwrap().bytes().unwrap();
     let cache_dir = dirs::cache_dir().unwrap().to_str().unwrap().to_owned() + "temp_wallpaper_file.jpg";
@@ -63,6 +67,7 @@ fn cache_image(img_url : &str) -> String{
     return cache_dir.to_string();
 }
 
+// sets the user's wallpaper to the image at the provided source
 fn set_wallpaper(source :&Source, api_key : &str){
     let img_url = match source {
         Source::NationalGeographic => get_natgeo_img(),
@@ -77,11 +82,11 @@ fn set_wallpaper(source :&Source, api_key : &str){
 
 fn main() {
     let mut source : Source = Source::NASA;
-    let mut key = API_KEY;
+    let mut key = NASA_API_KEY;
 
     let args = Command::new("wallpaper-set")
-            .version("0.3.0")
-            .about("wallpaper grabs either the NASA APOD or the National Geographic picture of the day, and sets it as your desktop background")
+            .version("0.3.2")
+            .about("wallpaper of the day grabs a \'photo of the day\' from a selection of websites, and automatically sets it to your desktop background")
             .args(&[
                 Arg::new("nasa")
                 .short('n')
@@ -126,7 +131,7 @@ fn main() {
 
     set_wallpaper(&source, key);
 
-    //continues to run the app in the background, updating the image every 24 hours
+    //continues to run the app in the background, updating the image every 24 hours at 00:15 UTC
     if args.get_flag("background"){
         let mut scheduler = Scheduler::with_tz(chrono::Utc);
         scheduler.every(1.day())
