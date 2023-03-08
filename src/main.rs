@@ -25,22 +25,32 @@ fn get_natgeo_img()-> String{
     let img_selector = scraper::Selector::parse("img").unwrap();
     let img_url = document.select(&wrapper_selector)
         .next()
-        .unwrap()
+        .expect("Could not find the expected \"a\" tag. Did the page structure change?")
         .select(&img_selector)
         .next()
-        .unwrap()
+        .expect("Could not find the \"img\" tag within the provided context. Did the page structure change?")
         .value()
-        .attr("src").unwrap();
+        .attr("src")
+        .expect("Could not find the attribute tag \"src\" in the provided webpage. Did the structure of the page change?");
     return img_url.to_string();
 }
 
 // Grabs the url of the NASA APOD via the NASA APOD API using the provided API key
 fn get_nasa_img(api_key : &str) -> String {
-    let api_response = reqwest_get("https://api.nasa.gov/planetary/apod?api_key=".to_owned() + &api_key).expect("Invalid API key!");
-    let img_json = api_response.text().unwrap();
-    let img_json : Value = serde_json::from_str(&img_json).unwrap();
-    let img_url = img_json.get("hdurl").unwrap();
-    return img_url.to_string().trim_matches('\"').to_string();
+    let api_response = reqwest_get("https://api.nasa.gov/planetary/apod?api_key=".to_owned() + &api_key)
+        .expect("Invalid API key!");
+    let img_json = api_response
+        .text()
+        .unwrap(); 
+    let img_json : Value = serde_json::from_str(&img_json)
+        .expect("Failed to parse JSON from the NASA API get");
+    let img_url = img_json
+        .get("hdurl")
+        .unwrap();
+    return img_url
+        .to_string()
+        .trim_matches('\"')
+        .to_string();
 }
 
 
@@ -76,7 +86,8 @@ fn set_wallpaper(source :&Source, api_key : &str){
     };
 
     let image_path = cache_image(img_url.as_str());
-    wallpaper::set_from_path(image_path.as_str()).unwrap();
+    wallpaper::set_from_path(image_path.as_str())
+        .expect("Wallpaper was not set successfully");
 }
 
 
@@ -85,7 +96,7 @@ fn main() {
     let mut key = NASA_API_KEY;
 
     let args = Command::new("wallpaper-set")
-            .version("0.3.2")
+            .version("0.3.3")
             .about("wallpaper of the day grabs a \'photo of the day\' from a selection of websites, and automatically sets it to your desktop background")
             .args(&[
                 Arg::new("nasa")
@@ -135,7 +146,9 @@ fn main() {
     if args.get_flag("background"){
         let mut scheduler = Scheduler::with_tz(chrono::Utc);
         scheduler.every(1.day())
-            .at("00:15").run(move || set_wallpaper(&source, key));
+            .at("00:15")
+            .run(move || set_wallpaper(&source, key));
+    
         loop{
             scheduler.run_pending();
             thread::sleep(Duration::from_secs(3600));
