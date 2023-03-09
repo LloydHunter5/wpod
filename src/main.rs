@@ -21,7 +21,7 @@ fn get_natgeo_img()-> String{
         .text()
         .unwrap();
     let document = scraper::Html::parse_document(&response_json);
-    let wrapper_selector = scraper::Selector::parse("a#POD05.DisplayBlock").unwrap();
+    let wrapper_selector = scraper::Selector::parse(".DisplayBlock").unwrap();
     let img_selector = scraper::Selector::parse("img").unwrap();
     let img_url = document.select(&wrapper_selector)
         .next()
@@ -96,7 +96,7 @@ fn main() {
     let mut key = NASA_API_KEY;
 
     let args = Command::new("wallpaper-set")
-            .version("0.3.3")
+            .version("0.3.4")
             .about("wallpaper of the day grabs a \'photo of the day\' from a selection of websites, and automatically sets it to your desktop background")
             .args(&[
                 Arg::new("nasa")
