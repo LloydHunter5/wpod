@@ -1,4 +1,4 @@
-# wpod (Wallpaper Photo Of the Day)
+# wpod (Wall Paper Of the Day)
 ### A command line app that can set your desktop background to various different pictures pulled from the internet
 ## Current Commands
     -g --natgeo           gets the National Geographic photo of the day
